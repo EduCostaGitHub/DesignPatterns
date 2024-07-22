@@ -24,6 +24,42 @@ Simple Factory pode não ser considerado um padrão de projeto por si só
 Simple Factory pode quebrar princípios do SOLID
 
 """
+from abc import ABC, abstractmethod
 
-class Vehicle:
-    pass
+class Vehicle(ABC):
+    @abstractmethod
+    def pick_client(self) -> None:pass
+    
+class LuxuryCar(Vehicle):
+    def pick_client(self) -> None:
+        print('Luxury Car is picking client')
+
+class UtilityCar(Vehicle):
+    def pick_client(self) -> None:
+        print('Utility Car is picking client')
+
+class Motocyle(Vehicle):
+    def pick_client(self) -> None:
+        print('Motocycle is picking client')
+
+
+#Simple Factory
+class VehicleFactory:
+    @staticmethod
+    def get_vehicle( car_type: str) -> Vehicle:
+        if car_type == 'luxury':
+            return LuxuryCar()
+        if car_type == 'utility':
+            return UtilityCar()
+        if car_type == 'motocycle':
+            return Motocyle()
+        assert 0, 'Vehicle doesn exist'
+        
+# Code Test
+if __name__ == "__main__":
+    from random import choice
+    available_cars = ['luxury','utility','motocycle']
+    for i in range(10):
+        car = VehicleFactory.get_vehicle(choice(available_cars))
+        car.pick_client()
+
