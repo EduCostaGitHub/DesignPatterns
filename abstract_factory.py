@@ -58,52 +58,73 @@ class VehicleFactory(ABC):
     
     @staticmethod
     @abstractmethod
-    def get_Luxury_vehicle( car_type: str) -> LuxuryVehicle: pass
+    def get_Luxury_car() -> LuxuryVehicle: pass
 
     @staticmethod
     @abstractmethod
-    def get_Utility_vehicle( car_type: str) -> UtilityVehicle: pass
+    def get_Utility_car() -> UtilityVehicle: pass
+
+    @staticmethod
+    @abstractmethod
+    def get_Luxury_moto() -> LuxuryVehicle: pass
+
+    @staticmethod
+    @abstractmethod
+    def get_Utility_moto() -> UtilityVehicle: pass
 
 
 #Factory Method
 class NorthVehicleFactory(VehicleFactory):
+    
+    @staticmethod    
+    def get_Luxury_car() -> LuxuryVehicle:
+        return LuxuryCar_NZ()
+
+    @staticmethod    
+    def get_Utility_car() -> UtilityVehicle:
+        return UtilityCar_NZ()
+
     @staticmethod
-    def get_vehicle( car_type: str) -> Vehicle:
-        if car_type == 'luxury':
-            return LuxuryCar()
-        if car_type == 'utility':
-            return UtilityCar()
-        if car_type == 'motocycle':
-            return UtilityMotocyle()
-        if car_type == 'luxurymotocycle':
-            return LuxuryMotocyle()
-        assert 0, 'Vehicle doesn exist'
+    def get_Luxury_moto() -> LuxuryVehicle:
+        return LuxuryMotocyle_NZ()
+
+    @staticmethod    
+    def get_Utility_moto() -> UtilityVehicle:
+        return UtilityMotocyle_NZ()
 
 class SouthVehicleFactory(VehicleFactory):
-    @staticmethod
-    def get_vehicle( car_type: str) -> Vehicle:        
-        if car_type == 'utility':
-            return UtilityCar()
-        if car_type == 'motocycle':
-            return UtilityMotocyle()        
-        assert 0, 'Vehicle doesn exist'
+    @staticmethod    
+    def get_Luxury_car() -> LuxuryVehicle:
+        return LuxuryCar_SZ()
 
-        
+    @staticmethod    
+    def get_Utility_car() -> UtilityVehicle:
+        return UtilityCar_SZ()
+
+    @staticmethod
+    def get_Luxury_moto() -> LuxuryVehicle:
+        return LuxuryMotocyle_SZ()
+
+    @staticmethod    
+    def get_Utility_moto() -> UtilityVehicle:
+        return UtilityMotocyle_SZ()
+
+class Subsidiary():
+    def get_clients(self):
+        for factory in [NorthVehicleFactory(),SouthVehicleFactory()]:
+            utility_car = factory.get_Utility_car()
+            utility_car.pick_client()
+
+            luxury_car = factory.get_Luxury_car()
+            luxury_car.pick_client()
+
+            utility_moto = factory.get_Utility_moto()
+            utility_moto.pick_client()
+
+            luxury_moto = factory.get_Luxury_moto()
+            luxury_moto.pick_client()
 # Code Test
 if __name__ == "__main__":
-    from random import choice
-    available_cars_north = ['luxury','utility','motocycle','luxurymotocycle']
-    available_cars_south = ['utility','motocycle']
-    
-    print('North Zone')
-    for i in range(10):
-        car = NorthVehicleFactory(choice(available_cars_north))
-        car.pick_client()
-    print()
-
-    print('South Zone')
-    for i in range(10):
-        car_2 = SouthVehicleFactory(choice(available_cars_south))
-        car_2.pick_client()
-
+   client = Subsidiary()
+   client.get_clients()
     
