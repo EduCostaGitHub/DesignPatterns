@@ -44,11 +44,12 @@ from typing import Any
 
 
 class Singleton(type):
-    _instance = {}
+    _instances: dict= {}
 
     def __call__(cls, *args, **kwargs):
-        if cls not in cls._instance:
-            pass
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__call__(*args, **kwargs)
+        return cls._instances[cls]
 
    
 class AppSettings(metaclass=Singleton):    
@@ -59,12 +60,9 @@ class AppSettings(metaclass=Singleton):
 if __name__ == '__main__':
     ApS_1 = AppSettings()
     ApS_1.tema = 'Bright'
-    print(ApS_1.tema)
 
     ApS_2 = AppSettings()
-    print(ApS_1.tema)
 
-    
-    print(ApS_1)
-    print(ApS_2)
-
+    print(ApS_1.tema)   
+    print(ApS_2.tema)  
+    print(ApS_2 == ApS_1)
