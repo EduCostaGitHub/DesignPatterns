@@ -32,6 +32,9 @@ e muito mais...
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
+from ast import main
+from multiprocessing.spawn import _main
+from threading import main_thread
 from time import sleep
 from typing import List, Dict
 
@@ -40,6 +43,7 @@ class IUser(ABC):
     """ Subject Interaface"""
     firstname: str
     lastname: str
+
 
     @abstractmethod
     def get_addresses(self) -> List[Dict]:
