@@ -41,32 +41,89 @@ que é exterior.
 
 from __future__ import annotations
 from abc import ABC, abstractmethod
-from typing import List, Dict, Literal
+from typing import List, Dict
+
 
 class Client:
     """Context"""
-    def __init__(self, name : str) -> None:
+
+    def __init__(self, name: str) -> None:
         self.name: str = name
-        self._addresses: List[Address] =[]
+        self._addresses: List[Address] = []
 
         # Extrinsic address data
-        self._address_number: str
-        self._address_detail: str
+        self.address_number: str
+        self.address_detail: str
 
-    def add_address(self, address : Address) -> None:
+    def add_address(self, address: Address) -> None:
         self._addresses.append(address)
 
     def list_addreses(self) -> None:
         for address in self._addresses:
-            address.show_address(self._address_number, self._address_detail)
+            address.show_address(self.address_number, self.address_detail)
+
 
 class Address:
     """Flyweight"""
-    def __init__(self) -> None:
-        pass
 
-    def show_address(self, address_number:str, address_detail:str) -> None:
-        pass
+    def __init__(self, street: str, neighbourhood: str, zip_code: str) -> None:
+        self._street: str = street
+        self._neighbourhood: str = neighbourhood
+        self._zip_code: str = zip_code
+
+    def show_address(self, address_number: str, address_detail: str) -> None:
+        print(
+            self._street,
+            address_number,
+            self._neighbourhood,
+            self._zip_code,
+            address_detail,
+        )
+
+
+class AddressFactory:
+    _addresses: Dict = {}
+
+    def _get_key(self, **kwargs) -> str:
+        return ''.join(kwargs.values())
+
+    def get_address(self, **kwargs) -> Address:
+        key = self._get_key(**kwargs)
+
+        try:
+            address_flyweight = self._addresses[key]
+            print('reusing object')
+        except KeyError:
+            address_flyweight = Address(**kwargs)
+            self._addresses[key] = address_flyweight
+            print('New Object')
+
+        return address_flyweight
+
 
 if __name__ == "__main__":
-    pass
+    address_factory = AddressFactory()
+
+    address1: Address = address_factory.get_address(
+        street='Av Artur semedo',
+        neighbourhood='Vila Chã',
+        zip_code='2700-783'
+    )
+
+    address2: Address = address_factory.get_address(
+        street='Av Artur semedo',
+        neighbourhood='Vila Chã',
+        zip_code='2700-783'
+    )
+
+    edu = Client('Edu')
+    edu.address_number = '10'
+    edu.address_detail = 'Casa'
+    edu.add_address(address1)
+    edu.list_addreses()
+
+    marta = Client('Marta')
+    marta.address_number = '12'
+    marta.address_detail = 'Casa'
+    marta.add_address(address2)
+    marta.list_addreses()
