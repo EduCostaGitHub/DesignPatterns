@@ -100,13 +100,63 @@ class SpecialHotdog(Hotdog):
             PotatoSticks(),
         ]
 
+"""Decorators"""
 
+class HotdogDecorator(Hotdog):
+    def __init__(self, hotdog: Hotdog) -> None:
+        self.hotdog: Hotdog = hotdog
 
+    @property
+    def price(self) -> float:
+        return self.hotdog.price
 
+    @property
+    def name(self) -> str:
+        return self.hotdog.name
+
+    @property
+    def ingredients(self) -> List[Ingredient]:
+        return self.hotdog.ingredients  
+
+class BaconDecorator(HotdogDecorator):
+    def __init__(self, hotdog: Hotdog) -> None:
+        super().__init__(hotdog)
+
+        self._ingredient = Bacon()
+
+        self.my_ingredients: List[Ingredient] = deepcopy(self.hotdog.ingredients)
+        self.my_ingredients.append(self._ingredient)
+
+    @property
+    def price(self) -> float:
+        return round(sum([
+            item.price for item in self.my_ingredients
+        ]),2)
+    
+    @property
+    def name(self) -> str:
+        return f'{self.hotdog.name} + {self._ingredient.__class__.__name__}'
+
+    @property
+    def ingredients(self) -> List[Ingredient]:
+        return self.my_ingredients   
+   
+
+    
 if __name__ == "__main__":
-
-    simple_hotdog= SimpleHotdog()
+    
+    simple_hotdog= SimpleHotdog()    
+    Bacon_decorated_simple_hotdog = BaconDecorator(simple_hotdog)
+    DoubleBacon_decorated_simple_hotdog = BaconDecorator(Bacon_decorated_simple_hotdog)
     print(simple_hotdog)
-    print()
-    special_hotdog= SpecialHotdog()
-    print(special_hotdog)
+    print()    
+    print(Bacon_decorated_simple_hotdog)
+    print()    
+    print(DoubleBacon_decorated_simple_hotdog)
+    
+
+
+
+    # print()
+    # special_hotdog= SpecialHotdog()
+    # print(special_hotdog)
